@@ -1,10 +1,16 @@
+from operator import itemgetter
+
 f = open("input.txt")
 
 buf = f.readlines()
-first = buf[0]
-last = buf[1]
+first = buf[0].rstrip()
+last = buf[1].rstrip()
 length = int(buf[2])
-ldict = buf[3:]
+ldi = buf[3:]
+ldict = []
+
+for word in ldi :
+    ldict.append(word.rstrip())
 
 def ldist(s1, s2) :
     l1 = len(s1)
@@ -21,11 +27,46 @@ def ldist(s1, s2) :
                 matrix[zz+1][sz+1] = min(matrix[zz+1][sz] + 1, matrix[zz][sz+1] + 1, matrix[zz][sz] + 1)
     return matrix[l2][l1]
 
-way = []
-for i in range(0,len(ldict)) :
-    if len(way) == 0 :
-        if first == ldict[i] :
-            way.append(i)
+way = dict()
+
+w = []
+
+ndict = ldict
+ndict.insert(0,first)
+ndict.append(last)
+
+table = []
+for i in range (length + 2) :
+    lin = []
+    for j in range (length + 2) :
+        lin.append(ldist(ndict[i],ndict[j]))
+    table.append(lin)
+    print lin
+
+def go(curr) :
+    print
+    print curr, ":",
+    if curr == length + 1 :
+        return True
+    s = 0
+    for i in range (length + 2) :
+        p = []
+        if (table[curr][i] == 1) and (i > curr):
+            p.append(i)
+            s += 1
+        if way.has_key(curr) :
+            way[curr].append(p)
+        else :
+            way[curr] = p
+    if s == 0 :
+        return False
     else :
-        if ldist(first)
+        for i in range (len(way[curr])) :
+            go(way[curr][i])
+
+
+if not go(0) :
+    print "Impossible"
+else :
+    print way
 print ldist('abacaba','abracadabra')
