@@ -26,7 +26,7 @@ b_val = 0
 if n == b or n == a :
     done = True
     res = True
-elif b % a == 0 :
+elif b % a == 0 and n % a != 0:
     done = True
 
 while not done :
