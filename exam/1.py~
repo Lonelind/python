@@ -37,7 +37,7 @@ while not done :
     else :
         if b_val < b :
             if b - b_val < a_val :
-                a_val -= b - b_val
+                a_val -= b - b_wal
                 b_val = b
             else :
                 b_val += a_val
@@ -74,7 +74,7 @@ if res :
                 if b_val < b :
                     print "%s>%s" % (mine, maxe)                    
                     if b - b_val < a_val :
-                        a_val -= b - b_val
+                        a_val -= b - b_wal
                         b_val = b
                     else :
                         b_val += a_val
