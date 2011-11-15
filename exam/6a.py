@@ -3,20 +3,19 @@ import copy
 f = open("input.txt")
 
 buf = f.readlines()
-first = unicode(buf[0].rstrip(), 'utf-8')
-last = unicode(buf[1].rstrip(), 'utf-8')
+first = buf[0].rstrip()
+last = buf[1].rstrip()
 length = int(buf[2])
 ldi = buf[3:]
+ldict = []
+f.close()
 
 for i in range(length) :
-    ldict.append(unicode(ldi[i].rstrip(), 'utf-8'))
-
-print first
+    ldict.append(ldi[i].rstrip())
 
 def ldist(s1, s2) :
     l1 = len(s1)
     l2 = len(s2)
-
     matrix = [range(l1 + 1)] * (l2 + 1)
     for zz in range(l2 + 1) :
         matrix[zz] = range(zz,zz + l1 + 1)
@@ -28,10 +27,8 @@ def ldist(s1, s2) :
                 matrix[zz+1][sz+1] = min(matrix[zz+1][sz] + 1, matrix[zz][sz+1] + 1, matrix[zz][sz] + 1)
     return matrix[l2][l1]
 
-ldict = ldi
 ldict.insert(0,first)
 ldict.append(last)
-f.close()
 length +=2
 lmatrix = []
 
