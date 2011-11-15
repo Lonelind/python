@@ -1,82 +1,79 @@
-__author__ = 'vigo@vigo.su'
-
-# -*- coding: utf-8 -*-
-
-import re
 import copy
-def lev(word1, word2) :
-    l1 = len(word1)
-    l2 = len(word2)
-    table = [range(l1 + 1)] * (l2 + 1)
+
+f = open("input.txt")
+
+buf = f.readlines()
+first = buf[0].rstrip()
+last = buf[1].rstrip()
+length = int(buf[2])
+ldi = buf[3:]
+ldict = []
+
+def ldist(s1, s2) :
+    l1 = len(s1)
+    l2 = len(s2)
+
+    matrix = [range(l1 + 1)] * (l2 + 1)
     for zz in range(l2 + 1) :
-        table[zz] = range(zz,zz + l1 + 1)
+        matrix[zz] = range(zz,zz + l1 + 1)
     for zz in range(0,l2) :
         for sz in range(0,l1) :
-            if word1[sz] == word2[zz] :
-                table[zz+1][sz+1] = min(table[zz+1][sz] + 1, table[zz][sz+1] + 1, table[zz][sz])
+            if s1[sz] == s2[zz] :
+                matrix[zz+1][sz+1] = min(matrix[zz+1][sz] + 1, matrix[zz][sz+1] + 1, matrix[zz][sz])
             else :
-                table[zz+1][sz+1] = min(table[zz+1][sz] + 1, table[zz][sz+1] + 1, table[zz][sz] + 1)
-    return table[l2][l1]
+                matrix[zz+1][sz+1] = min(matrix[zz+1][sz] + 1, matrix[zz][sz+1] + 1, matrix[zz][sz] + 1)
+    return matrix[l2][l1]
 
-f = open('6.txt','r')
-s1 = unicode(f.readline().strip(), 'utf-8')
-s2 = unicode(f.readline().strip(), 'utf-8')
-fuu = int(f.readline());
-
-strs = []
-strs.append(s1)
-for i in xrange(0,fuu,1):
-    ss = unicode(f.readline().strip(), 'utf-8')
-    strs.append(ss)
-strs.append(s2)
+ldict = ldi
+ldict.insert(0,first)
+ldict.append(last)
 f.close()
-fuu +=2
-levmatrix = []
+length +=2
+lmatrix = []
 
-for i in xrange(0,fuu,1):
-    levrow =[]
-    for j in xrange(0,fuu,1):
-        if i==j:
-            levrow.append(0)
-        else:
-            levrow.append(lev(strs[i],strs[j]))
-    levmatrix.append(levrow)
+for i in range(length) :
+    row = []
+    for j in range(length) :
+        row.append(ldist(ldict[i],ldict[j]))
+    lmatrix.append(row)
+
 words = []
-words.append([s1])
-check = True
-allfinish = False
-while check:
-    tempwords = copy.deepcopy(words)
-    for lq in xrange(0,len(words),1):
-        check = False
-        for i in xrange (0,len(strs),1):
-            if strs[i]==words[lq][len(words[lq])-1]:
-                for j in xrange (i+1,len(strs),1):
-                    if levmatrix[i][j]==1:
-                        if strs[i]==s2:
-                            allfinish = True
-                        tempstr = []
-                        tempstr = copy.deepcopy(words[lq])
-                        tempstr.append(strs[j])
-                        levmatrix[i][j]=0
-                        tempwords.append(tempstr)
-                        check = True
-    if len(tempwords)>0:
-        words = copy.deepcopy(tempwords)
-minleng = -1
-minlengi = 0
-for i in xrange(0,len(words),1):
-    if words[i][0]==s1 and words[i][len(words[i])-1]==s2:
-        if minleng==-1:
-            minleng = len(words[i])
-            minlengi = i
-        if minleng>len(words[i]):
-            minleng = len(words[i])
-            minlengi = i
+words.append([first])
 
-if minleng == -1:
+check = True
+done = False
+
+while check :
+    t = copy.deepcopy(words)
+    for p in range(len(words)) :
+        check = False
+        for i in range (len(ldict)) :
+            if ldict[i] == words[p][len(words[p]) - 1] :
+                for j in range (i+1,len(ldict)) :
+                    if lmatrix[i][j] == 1 and ldict[i] == last :  
+                        done = True
+                    temp = []
+                    temp = copy.deepcopy(words[p])
+                    temp.append(ldict[j])
+                    lmatrix[i][j]=0
+                    t.append(temp)
+                    check = True
+    if len(t) > 0 :
+        words = copy.deepcopy(t)
+minlength = -1
+minindex = 0
+for i in range(len(words)):
+    if words[i][0] == first and words[i][len(words[i])-1] == last :
+        if minlength == -1:
+            minlength = len(words[i])
+            minindex = i
+        if minlength > len(words[i]):
+            minlength = len(words[i])
+            minindex = i
+
+if minlength == -1:
     print "Impossible"
 else:
-    for i in xrange(0,minleng-1,1):
-        print words[minlengi][i]
-    print s2
+    for i in range(minlength - 1):
+        print words[minindex][i]
+    print last
