@@ -3,11 +3,15 @@ import copy
 f = open("input.txt")
 
 buf = f.readlines()
-first = buf[0].rstrip()
-last = buf[1].rstrip()
+first = unicode(buf[0].rstrip(), 'utf-8')
+last = unicode(buf[1].rstrip(), 'utf-8')
 length = int(buf[2])
 ldi = buf[3:]
-ldict = []
+
+for i in range(length) :
+    ldict.append(unicode(ldi[i].rstrip(), 'utf-8'))
+
+print first
 
 def ldist(s1, s2) :
     l1 = len(s1)
@@ -49,15 +53,16 @@ while check :
         check = False
         for i in range (len(ldict)) :
             if ldict[i] == words[p][len(words[p]) - 1] :
-                for j in range (i+1,len(ldict)) :
-                    if lmatrix[i][j] == 1 and ldict[i] == last :  
-                        done = True
-                    temp = []
-                    temp = copy.deepcopy(words[p])
-                    temp.append(ldict[j])
-                    lmatrix[i][j]=0
-                    t.append(temp)
-                    check = True
+                for j in range (i + 1,len(ldict)) :
+                    if lmatrix[i][j] == 1 : 
+                        if ldict[i] == last :  
+                            done = True
+                        temp = []
+                        temp = copy.deepcopy(words[p])
+                        temp.append(ldict[j])
+                        lmatrix[i][j]=0
+                        t.append(temp)
+                        check = True
     if len(t) > 0 :
         words = copy.deepcopy(t)
 minlength = -1
